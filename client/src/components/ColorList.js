@@ -13,7 +13,7 @@ const ColorList = ({ colors, updateColors }) => {
   const [colorToEdit, setColorToEdit] = useState(initialColor);  
   const [newColor, setNewColor] = useState({
     color:'',
-    code:{hex: '#'},
+    code: {hex: '#'},
     id: colors.length+1
 
   });
