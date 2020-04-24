@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { axiosWithAuth } from '../utils/axiosWithAuth.js';
-import * as yup from "yup";
 
 
 
@@ -8,21 +7,6 @@ const initialColor = {
   color: "",
   code: { hex: "" }
 };
-
-// const formSchema = yup.object().shape({
-//   size: yup.string().required("Please select a size"),
-//   sauce: yup.string().required("Please select a sauce"),
-//   pepperoni: yup.string(),
-//   sausage: yup.string(),
-//   pineapple: yup.string(),
-//   bacon: yup.string(),
-//   glutenFree: yup.string(),
-//   special: yup.string(),
-//   name: yup.string().min(2).required("Please include a name")
-
-//   color: yup.string().required("Pease input a color"),
-//   code:{hex: yup.string.required()}
-// });
 
 const ColorList = ({ colors, updateColors }) => {
   const [editing, setEditing] = useState(false);
@@ -33,8 +17,10 @@ const ColorList = ({ colors, updateColors }) => {
     id: colors.length+1
 
   });
-  console.log(colors)
-
+  const [errors, setErrors] = useState({
+    colors: "",
+    code: ""
+})
 
   const editColor = color => {
     setEditing(true);
