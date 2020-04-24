@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { axiosWithAuth } from '../utils/axiosWithAuth.js';
+import * as yup from "yup";
+
 
 
 const initialColor = {
@@ -7,10 +9,31 @@ const initialColor = {
   code: { hex: "" }
 };
 
+// const formSchema = yup.object().shape({
+//   size: yup.string().required("Please select a size"),
+//   sauce: yup.string().required("Please select a sauce"),
+//   pepperoni: yup.string(),
+//   sausage: yup.string(),
+//   pineapple: yup.string(),
+//   bacon: yup.string(),
+//   glutenFree: yup.string(),
+//   special: yup.string(),
+//   name: yup.string().min(2).required("Please include a name")
+
+//   color: yup.string().required("Pease input a color"),
+//   code:{hex: yup.string.required()}
+// });
+
 const ColorList = ({ colors, updateColors }) => {
   const [editing, setEditing] = useState(false);
   const [colorToEdit, setColorToEdit] = useState(initialColor);  
-  const [listOfColors, setListOfColors] = useState([]);
+  const [newColor, setNewColor] = useState({
+    color:'',
+    code:{hex: '#'},
+    id: colors.length+1
+
+  });
+  console.log(colors)
 
 
   const editColor = color => {
@@ -47,12 +70,26 @@ const ColorList = ({ colors, updateColors }) => {
     .catch(err => console.log(`Error: ${err}`))
   };
 
+  const handleChange = event => {
+    setNewColor({ ...newColor, [event.target.name]: event.target.name ==='code'? {hex:`#${event.target.value}`}:  event.target.value.toLowerCase() })
+};
+
+const submitNewColor = event =>{
+  event.preventDefault();
+  axiosWithAuth()
+  .post('/api/colors', newColor)
+  .then(res => { 
+    updateColors(res.data)
+  })
+  .catch(err => console.log(`Error: ${err}`))
+}
+
   return (
     <div className="colors-wrap">
       <p>colors</p>
       <ul>
       {colors.map(color => (
-      <li key={color.color} onClick={() => editColor(color)}>
+      <li key={color.id} onClick={() => editColor(color)}>
         <span>
           <span className="delete" onClick={e => {
                 e.stopPropagation();
@@ -71,7 +108,7 @@ const ColorList = ({ colors, updateColors }) => {
     ))}
       </ul>
       {editing && (
-        <form onSubmit={saveEdit}>
+        <form id="colorForm" onSubmit={saveEdit}>
           <legend>edit color</legend>
           <label>
             color name:
@@ -102,6 +139,18 @@ const ColorList = ({ colors, updateColors }) => {
       )}
       <div className="spacer" />
       {/* stretch - build another form here to add a color */}
+      <form onSubmit={submitNewColor}>
+        <h3>Add a new color</h3>
+        <label htmlFor='color'>
+          Color:
+          <input type='text' name='color' onChange={handleChange} />
+        </label>
+        <label htmlFor='code'>
+          Hex Code:
+          <input type='text' name='code' onChange={handleChange} />
+        </label>
+        <input type='submit' name='submit' />
+      </form>
     </div>
   );
 };
