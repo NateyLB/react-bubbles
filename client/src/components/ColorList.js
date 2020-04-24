@@ -91,7 +91,7 @@ const submitNewColor = event =>{
           style={{ backgroundColor: color.code.hex }}
         />
       </li>
-    ))}
+     ))}
       </ul>
       {editing && (
         <form id="colorForm" onSubmit={saveEdit}>
@@ -135,7 +135,7 @@ const submitNewColor = event =>{
           Hex Code:
           <input type='text' name='code' onChange={handleChange} />
         </label>
-        <input type='submit' name='submit' />
+        <input className="submit" type='submit' name='submit' />
       </form>
     </div>
   );
