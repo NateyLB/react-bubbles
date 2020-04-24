@@ -1,17 +1,28 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import { axiosWithAuth } from '../utils/axiosWithAuth.js';
 
 import Bubbles from "./Bubbles";
 import ColorList from "./ColorList";
 
+
 const BubblePage = () => {
+  //atate for our list of colors
   const [colorList, setColorList] = useState([]);
-  // fetch your colors data from the server when the component mounts
-  // set that data to the colorList state property
+  //fetches the list of colors on render of components
+  useEffect(()=>{
+    axiosWithAuth()
+    .get('/api/colors')
+    .then(res => setColorList(res.data))
+    .catch(err => console.log(`Error: ${err}`))
+
+
+  },[])
 
   return (
     <>
+    {/* List of colors */}
       <ColorList colors={colorList} updateColors={setColorList} />
+      {/* LBubbles of colors */}
       <Bubbles colors={colorList} />
     </>
   );
