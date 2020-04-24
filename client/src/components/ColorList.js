@@ -27,6 +27,7 @@ const ColorList = ({ colors, updateColors }) => {
     setColorToEdit(color);
   };
 
+  //updates the editted color in the API
   const saveEdit = e => {
     e.preventDefault();
     // Make a put request to save your updated color
@@ -39,13 +40,14 @@ const ColorList = ({ colors, updateColors }) => {
       var index = colorToEdit.id-1;
       newColors.splice(index, 1, res.data)
       updateColors(newColors)
+      //colors.splice(index, 1, res.data)
       setEditing(false)
 
     })
     .catch(err => console.log(`Error: ${err}`))
   };
   
-
+  //deletes the selected color in the API
   const deleteColor = color => {
     // make a delete request to delete this color
     axiosWithAuth()
@@ -56,10 +58,12 @@ const ColorList = ({ colors, updateColors }) => {
     .catch(err => console.log(`Error: ${err}`))
   };
 
+  //handles form changes
   const handleChange = event => {
     setNewColor({ ...newColor, [event.target.name]: event.target.name ==='code'? {hex:`#${event.target.value}`}:  event.target.value.toLowerCase() })
 };
 
+//adds a new color to the API
 const submitNewColor = event =>{
   event.preventDefault();
   axiosWithAuth()
@@ -71,11 +75,12 @@ const submitNewColor = event =>{
 }
 
   return (
+    // color list
     <div className="colors-wrap">
       <p>colors</p>
       <ul>
-      {colors.map(color => (
-      <li key={color.id} onClick={() => editColor(color)}>
+      {colors.map(color => ( 
+<li key={color.id} onClick={() => editColor(color)}>
         <span>
           <span className="delete" onClick={e => {
                 e.stopPropagation();
@@ -92,6 +97,7 @@ const submitNewColor = event =>{
         />
       </li>
      ))}
+     {/* form to edit selected color */}
       </ul>
       {editing && (
         <form id="colorForm" onSubmit={saveEdit}>
@@ -102,7 +108,7 @@ const submitNewColor = event =>{
               onChange={e =>
                 setColorToEdit({ ...colorToEdit, color: e.target.value })
               }
-              value={colorToEdit.color}
+              placeholder={colorToEdit.color}
             />
           </label>
           <label>
@@ -114,7 +120,7 @@ const submitNewColor = event =>{
                   code: { hex: e.target.value }
                 })
               }
-              value={colorToEdit.code.hex}
+              placeholder={colorToEdit.code.hex}
             />
           </label>
           <div className="button-row">
@@ -123,17 +129,16 @@ const submitNewColor = event =>{
           </div>
         </form>
       )}
-      <div className="spacer" />
-      {/* stretch - build another form here to add a color */}
+      {/* form here to add a color */}
       <form onSubmit={submitNewColor}>
-        <h3>Add a new color</h3>
+        <h3>add a new color</h3>
         <label htmlFor='color'>
-          Color:
-          <input type='text' name='color' onChange={handleChange} />
+          color:
+          <input type='text' name='color' placeholder="teal" onChange={handleChange} />
         </label>
         <label htmlFor='code'>
-          Hex Code:
-          <input type='text' name='code' onChange={handleChange} />
+          hex Code:
+          <input type='text' name='code' placeholder="ff11h2" onChange={handleChange} />
         </label>
         <input className="submit" type='submit' name='submit' />
       </form>
